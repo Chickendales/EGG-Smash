@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chickendales Egg Tap Game</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      background: #fff8dc;
+      padding: 30px;
+    }
+    #chicken {
+      width: 150px;
+      cursor: pointer;
+    }
+    #egg {
+      width: 100px;
+      display: none;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 20px;
+      color: green;
+    }
+    #orderBtn {
+      display: none;
+      margin-top: 15px;
+      background: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🐔 Chickendales Egg Tap Game</h1>
+  <p>Tap the chicken to lay an egg. Tap the egg until it breaks!</p>
+
+  <img id="chicken" src="https://i.imgur.com/lYVZfC5.png" alt="Chicken">
+  <br>
+  <img id="egg" src="https://i.imgur.com/Vx3XcKp.png" alt="Egg">
+  <div id="message"></div>
+  <button id="orderBtn">Order with Coupon</button>
+
+  <script>
+    const chicken = document.getElementById("chicken");
+    const egg = document.getElementById("egg");
+    const message = document.getElementById("message");
+    const orderBtn = document.getElementById("orderBtn");
+
+    let eggHealth = 3;
+    let coupon = null;
+
+    const coupons = [
+      { code: "5OFF", text: "🎉 You found a 5% OFF coupon!", chance: 0.3 },
+      { code: "10OFF", text: "🔥 You found a 10% OFF coupon!", chance: 0.2 },
+      { code: "20OFF", text: "💥 You found a 20% OFF coupon!", chance: 0.07 },
+      { code: "50OFF", text: "🥚 RARE! 50% OFF coupon found!", chance: 0.01 }
+    ];
+
+    function getRandomCoupon() {
+      const rand = Math.random();
+      let total = 0;
+      for (let c of coupons) {
+        total += c.chance;
+        if (rand < total) return c;
+      }
+      return null; // no coupon
+    }
+
+    chicken.onclick = () => {
+      egg.style.display = "inline";
+      egg.src = "https://i.imgur.com/Vx3XcKp.png";
+      message.textContent = "";
+      orderBtn.style.display = "none";
+      eggHealth = 3;
+      coupon = null;
+    };
+
+    egg.onclick = () => {
+      eggHealth--;
+      if (eggHealth === 2) {
+        egg.src = "https://i.imgur.com/Yvcmuhk.png"; // cracked egg
+      } else if (eggHealth === 1) {
+        egg.src = "https://i.imgur.com/N4TY7uN.png"; // more cracked
+      } else {
+        egg.src = "https://i.imgur.com/4kZrChQ.png"; // broken egg
+        coupon = getRandomCoupon();
+        if (coupon) {
+          message.textContent = coupon.text + ` Use code: ${coupon.code}`;
+          orderBtn.style.display = "inline";
+        } else {
+          message.textContent = "😢 No coupon this time. Try again!";
+        }
+      }
+    };
+
+    orderBtn.onclick = () => {
+      const whatsappMsg = `Hi! I'd like to order eggs using coupon code: ${coupon.code}`;
+      const whatsappLink = `https://wa.me/27xxxxxxxxx?text=${encodeURIComponent(whatsappMsg)}`;
+      window.open(whatsappLink, "_blank");
+    };
+  </script>
+
+</body>
+</html>
